@@ -21,8 +21,7 @@ test.describe('Search', () => {
       await expect(homePage.searchInput).toHaveValue(data.query);
     });
     await test.step('verify search results are displayed', async () => {
-      const results = homePage.page.getByRole('listbox').first();
-      await expect(results).toBeVisible();
+      await expect(homePage.searchResults).toBeVisible();
     });
   });
 

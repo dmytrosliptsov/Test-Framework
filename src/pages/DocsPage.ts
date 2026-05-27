@@ -3,7 +3,6 @@ import { BasePage } from './BasePage';
 
 export class DocsPage extends BasePage {
   readonly pageHeading: Locator = this.getByRole('heading', { level: 1 });
-  readonly logoLink: Locator = this.getByRole('link', { name: 'Playwright' }).first();
   readonly sidebar: Locator = this.getByRole('navigation', { name: /docs sidebar/i });
   readonly breadcrumb: Locator = this.getByRole('navigation', { name: 'Breadcrumbs' });
   readonly tableOfContents: Locator = this.locator('.table-of-contents');
@@ -27,7 +26,7 @@ export class DocsPage extends BasePage {
     await this.tableOfContents.getByRole('link', { name }).click();
   }
 
-  async getSidebarLink(name: string | RegExp): Promise<Locator> {
+  getSidebarLink(name: string | RegExp): Locator {
     return this.sidebar.getByRole('link', { name });
   }
 }

@@ -18,7 +18,7 @@ test.describe('Docs page', () => {
       await expect(docsPage.sidebar).toBeVisible();
     });
     await test.step('verify sidebar has Installation link', async () => {
-      const link = await docsPage.getSidebarLink(/Installation/i);
+      const link = docsPage.getSidebarLink(/Installation/i);
       await expect(link).toBeVisible();
     });
   });

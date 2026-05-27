@@ -3,6 +3,8 @@ import { Page, Locator } from '@playwright/test';
 export abstract class BasePage {
   constructor(readonly page: Page) {}
 
+  readonly logoLink: Locator = this.getByRole('link', { name: 'Playwright' }).first();
+
   async navigate(path: string = '/'): Promise<void> {
     await this.page.goto(path);
   }

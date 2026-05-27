@@ -6,7 +6,6 @@ export type DocsPageExpectations = {
 
 export type SearchData = {
   query: string;
-  resultPattern: RegExp;
 };
 
 export type NavigationExpectations = {
@@ -28,7 +27,6 @@ export function createDocsPageExpectations(): DocsPageExpectations {
 export function createSearchData(): SearchData {
   return {
     query: 'page object',
-    resultPattern: /page/i,
   };
 }
 
