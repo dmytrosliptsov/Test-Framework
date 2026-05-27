@@ -5,6 +5,9 @@ export class HomePage extends BasePage {
   readonly searchButton: Locator = this.getByRole('button', { name: 'Search' });
   readonly getStartedLink: Locator = this.getByRole('link', { name: 'Get started' });
   readonly heroHeading: Locator = this.getByRole('heading', { name: /Playwright enables reliable/ });
+  readonly docsNavLink: Locator = this.getByRole('link', { name: 'Docs' });
+  readonly apiNavLink: Locator = this.getByRole('link', { name: 'API' });
+  readonly searchInput: Locator = this.getByRole('searchbox');
 
   async open(): Promise<void> {
     await this.navigate('/');
@@ -14,7 +17,16 @@ export class HomePage extends BasePage {
     await this.searchButton.click();
   }
 
+  async search(query: string): Promise<void> {
+    await this.openSearch();
+    await this.searchInput.fill(query);
+  }
+
   async clickGetStarted(): Promise<void> {
     await this.getStartedLink.click();
+  }
+
+  async clickDocs(): Promise<void> {
+    await this.docsNavLink.click();
   }
 }
