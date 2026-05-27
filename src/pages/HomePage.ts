@@ -5,8 +5,11 @@ export class HomePage extends BasePage {
   readonly searchButton: Locator = this.getByRole('button', { name: 'Search' });
   readonly getStartedLink: Locator = this.getByRole('link', { name: 'Get started' });
   readonly heroHeading: Locator = this.getByRole('heading', { name: /Playwright enables reliable/ });
+  readonly logoLink: Locator = this.getByRole('link', { name: 'Playwright' }).first();
   readonly docsNavLink: Locator = this.getByRole('link', { name: 'Docs' });
   readonly apiNavLink: Locator = this.getByRole('link', { name: 'API' });
+  readonly mcpNavLink: Locator = this.getByRole('link', { name: 'MCP', exact: true });
+  readonly cliNavLink: Locator = this.getByRole('link', { name: 'CLI' });
   readonly searchInput: Locator = this.getByRole('searchbox');
 
   async open(): Promise<void> {
@@ -28,5 +31,17 @@ export class HomePage extends BasePage {
 
   async clickDocs(): Promise<void> {
     await this.docsNavLink.click();
+  }
+
+  async clickApi(): Promise<void> {
+    await this.apiNavLink.click();
+  }
+
+  async clickMcp(): Promise<void> {
+    await this.mcpNavLink.click();
+  }
+
+  async goHome(): Promise<void> {
+    await this.logoLink.click();
   }
 }

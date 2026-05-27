@@ -9,6 +9,14 @@ export type SearchData = {
   resultPattern: RegExp;
 };
 
+export type NavigationExpectations = {
+  docsUrl: RegExp;
+  apiUrl: RegExp;
+  mcpUrl: RegExp;
+  homeUrl: RegExp;
+  writingTestsUrl: RegExp;
+};
+
 export function createDocsPageExpectations(): DocsPageExpectations {
   return {
     headingPattern: /Installation/,
@@ -21,5 +29,15 @@ export function createSearchData(): SearchData {
   return {
     query: 'page object',
     resultPattern: /page/i,
+  };
+}
+
+export function createNavigationExpectations(): NavigationExpectations {
+  return {
+    docsUrl: /docs\/intro/,
+    apiUrl: /docs\/api\/class-playwright/,
+    mcpUrl: /mcp\/introduction/,
+    homeUrl: /playwright\.dev\/?$/,
+    writingTestsUrl: /writing-tests/,
   };
 }
