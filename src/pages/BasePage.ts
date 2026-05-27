@@ -7,18 +7,6 @@ export abstract class BasePage {
     await this.page.goto(path);
   }
 
-  async waitForPageLoad(): Promise<void> {
-    await this.page.waitForLoadState('networkidle');
-  }
-
-  async getTitle(): Promise<string> {
-    return this.page.title();
-  }
-
-  async getUrl(): Promise<string> {
-    return this.page.url();
-  }
-
   protected locator(selector: string): Locator {
     return this.page.locator(selector);
   }
