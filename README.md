@@ -94,6 +94,8 @@ tests/
     playwright-site.spec.ts
 .github/workflows/
   playwright.yml        CI pipeline
+Dockerfile               Container image for running tests
+docker-compose.yml       Runs the suite in a container, mounts reports back to host
 playwright.config.ts
 tsconfig.json
 ```
@@ -115,6 +117,7 @@ tsconfig.json
 
 - Node.js (LTS recommended)
 - npm
+- Docker + Docker Compose (optional — only needed to run the suite in a container)
 
 ## Installation
 
@@ -164,6 +167,18 @@ npm run allure:generate   # build the HTML report from allure-results/ into allu
 npm run allure:open       # serve and open the generated Allure report
 npm run allure:report     # generate and open in one step
 ```
+
+## Running in Docker
+
+The suite can run inside a container based on the [official Playwright Docker image](https://playwright.dev/docs/docker), pinned to this project's installed Playwright version (`v1.60.0-noble`) so the container's bundled browsers match `@playwright/test`.
+
+```bash
+npm run test:docker
+```
+
+This runs `docker compose run --rm playwright`, which builds the image (installing dependencies via `npm ci`) and runs `npx playwright test` inside the container. `docker-compose.yml` mounts `playwright-report/`, `test-results/`, and `allure-results/` back to the host, so reports generated inside the container are viewable locally with the same commands as a native run (`npm run report`, `npm run allure:report`).
+
+`BASE_URL` can be overridden the same way as locally, e.g. `BASE_URL=https://playwright.dev npm run test:docker`. To run a subset of tests, pass extra arguments through Compose, e.g. `docker compose run --rm playwright npx playwright test --grep @smoke`.
 
 ## CI/CD
 

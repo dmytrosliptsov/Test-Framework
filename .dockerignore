@@ -1,0 +1,11 @@
+node_modules
+playwright-report
+test-results
+test-artifacts
+allure-results
+allure-report
+.git
+.github
+.husky
+.env
+.env.local
