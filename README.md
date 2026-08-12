@@ -1,5 +1,10 @@
 # Test-Framework
 
+[![CI](https://github.com/dmytrosliptsov/Test-Framework/actions/workflows/playwright.yml/badge.svg)](https://github.com/dmytrosliptsov/Test-Framework/actions/workflows/playwright.yml)
+[![Playwright](https://img.shields.io/github/package-json/dependency-version/dmytrosliptsov/Test-Framework/main/dev/@playwright/test?label=playwright)](https://playwright.dev)
+[![TypeScript](https://img.shields.io/github/package-json/dependency-version/dmytrosliptsov/Test-Framework/main/dev/typescript?label=typescript)](https://www.typescriptlang.org)
+[![License: MIT](https://img.shields.io/github/license/dmytrosliptsov/Test-Framework)](LICENSE)
+
 A production-ready end-to-end and API test automation framework built with **Playwright** and **TypeScript**, targeting [playwright.dev](https://playwright.dev). Built from scratch as a demonstration of SDET best practices: Page Object Model, composable fixtures, typed data factories, and CI/CD integration.
 
 ## Overview
