@@ -1,65 +1,65 @@
 # Playwright Test Framework — CLAUDE.md
 
-## Мета проекту
+## Project Goal
 
-Навчальний проект SDET Дими. Мета — побудувати **production-ready Playwright test framework** з нуля, крок за кроком, застосовуючи best practices. Не просто написати тести, а збудувати інфраструктуру для тестування.
+A learning project for practicing SDET (test automation engineering) skills. The goal is to build a **production-ready Playwright test framework** from scratch, step by step, applying industry best practices. Not just writing tests, but building out the supporting test infrastructure.
 
-**Цільовий сайт:** `https://playwright.dev` (офіційна документація Playwright).
+**Target site:** `https://playwright.dev` (the official Playwright documentation).
 
 ---
 
-## Технічний стек
+## Tech Stack
 
 - **Playwright 1.60+** — test runner + browser automation
 - **TypeScript** — strict mode
-- **dotenv** — конфігурація середовища через `.env`
+- **dotenv** — environment configuration via `.env`
 - **Node.js / npm**
-- Без зайвих залежностей — додавати бібліотеки тільки коли є чітка потреба
+- No unnecessary dependencies — only add a library when there's a clear need
 
 ---
 
-## Архітектура
+## Architecture
 
 ### Page Object Model
 
-- `BasePage` — абстрактний клас. Містить:
-  - `readonly page: Page` — публічне (мінімально використовувати в тестах)
-  - `readonly logoLink` — глобальний navbar елемент, спільний для всіх сторінок
-  - Захищені хелпери: `locator`, `getByRole`, `getByText`, `getByPlaceholder`, `getByTestId`
-  - `navigate(path)` — базова навігація
-- Конкретні сторінки extends `BasePage`:
-  - `HomePage` — головна сторінка, navbar links, search
+- `BasePage` — abstract base class. Contains:
+  - `readonly page: Page` — public (use minimally in tests)
+  - `readonly logoLink` — global navbar element, shared across all pages
+  - Protected helpers: `locator`, `getByRole`, `getByText`, `getByPlaceholder`, `getByTestId`
+  - `navigate(path)` — base navigation
+- Concrete pages extend `BasePage`:
+  - `HomePage` — homepage, navbar links, search
   - `DocsPage` — /docs/intro, sidebar, TOC, breadcrumb, pagination
   - `ApiReferencePage` — /docs/api/class-playwright
-- Локатори — `readonly` поля класу, **завжди синхронні** (Locator, не Promise<Locator>)
-- Методи описують **дії користувача**, не технічні деталі (`clickDocs()`, не `clickElement()`)
+- Locators — `readonly` class fields, **always synchronous** (Locator, not Promise<Locator>)
+- Methods describe **user actions**, not technical details (`clickDocs()`, not `clickElement()`)
 
 ### Fixtures
 
 - `src/fixtures/pages.fixture.ts` — Page Object fixtures (`homePage`, `docsPage`, `apiPage`)
 - `src/fixtures/api.fixture.ts` — `APIRequestContext` fixture (`apiContext`)
 - `src/fixtures/index.ts` — `mergeTests(pagesTest, apiTest)` + re-export `expect`
-- Fixture відповідає за створення об'єкта та виклик `open()` перед тестом
-- Тести імпортують **тільки** з `src/fixtures` (або `../../src/fixtures`)
+- A fixture is responsible for creating the object and calling `open()` before the test
+- Tests import **only** from `src/fixtures` (or `../../src/fixtures`)
 
 ### Data factories
 
 - `src/data/home.data.ts` — `createHomePageExpectations()`
 - `src/data/docs.data.ts` — `createDocsPageExpectations()`, `createSearchData()`, `createNavigationExpectations()`
-- Фабрики повертають типізовані об'єкти з RegExp та рядками
-- Типи оголошуються окремо (`export type`) поряд із фабрикою
+- Factories return typed objects with RegExp and strings
+- Types are declared separately (`export type`) alongside the factory
 
-### Структура папок
+### Folder Structure
 
 ```
 src/
   pages/              — Page Objects (BasePage, HomePage, DocsPage, ApiReferencePage)
   fixtures/           — Playwright fixtures (pages, api, index)
-  utils/              — допоміжні утиліти (поки порожньо)
-  data/               — тестові дані та фабрики
+  utils/              — shared utilities (currently empty)
+  data/               — test data and factories
 tests/
-  e2e/                — end-to-end тести
-  api/                — HTTP API тести
+  e2e/                — end-to-end tests
+  api/                — HTTP API tests
 .github/workflows/    — GitHub Actions CI/CD
 ```
 
@@ -74,50 +74,47 @@ tests/
 
 ---
 
-## Конвенції
+## Conventions
 
-### Іменування
-- `PascalCase` для Page Objects (`HomePage.ts`)
-- `camelCase.fixture.ts` для fixtures
-- `kebab-case.spec.ts` для тестів
+### Naming
+- `PascalCase` for Page Objects (`HomePage.ts`)
+- `camelCase.fixture.ts` for fixtures
+- `kebab-case.spec.ts` for tests
 
-### Теги тестів
-- `@smoke` — критичні перевірки, запускаються першими
-- `@regression` — повна перевірка функціональності
-- `@api` — HTTP рівень (без браузера)
+### Test tags
+- `@smoke` — critical checks, run first
+- `@regression` — full functional coverage
+- `@api` — HTTP level (no browser)
 
-### Локатори
-- Пріоритет: `getByRole` > `getByText` > `getByPlaceholder` > CSS клас (`.class-name`)
-- Локатори завжди в Page Object, **ніколи** в тесті
-- `exact: true` коли текст локатора може частково збігатись з іншими елементами на сторінці
-- Методи що повертають `Locator` — **синхронні** (не async)
+### Locators
+- Priority: `getByRole` > `getByText` > `getByPlaceholder` > CSS class (`.class-name`)
+- Locators always live in the Page Object, **never** in the test
+- `exact: true` when a locator's text could partially match other elements on the page
+- Methods returning `Locator` are **synchronous** (not async)
 
-### Тести
-- `test.step()` для кожного логічного кроку — покращує HTML звіт
-- Кроки **пласкі** (не вкладені), кожен крок — одна дія або одна assertion
-- Дані — тільки через фабрики, без hardcoded рядків у тестах
-- Прямий доступ до `page` в тесті — тільки коли немає альтернативи
+### Tests
+- `test.step()` for every logical step — improves the HTML report
+- Steps are **flat** (not nested), each step is one action or one assertion
+- Data — only via factories, no hardcoded strings in tests
+- Direct access to `page` in a test — only when there's no alternative
 
-### Коментарі
-- Тільки коли WHY неочевидний. Не коментувати що робить код.
-
-### Мова
-- Спілкування з Димою — **українська**
+### Comments
+- Only when the WHY isn't obvious. Don't comment on what the code does.
 
 ---
 
-## Відкриті архітектурні питання
+## Open Architectural Questions
 
-1. `page` в `BasePage` — `readonly` (публічне). Поки залишаємо так, але у тестах звертатись мінімально
-2. Fixture завжди викликає `open()` — якщо з'явиться потреба не відкривати сторінку автоматично, обговорити окремо
+1. `page` in `BasePage` is `readonly` (public). Left as-is for now, but tests should touch it minimally
+2. A fixture always calls `open()` — if a need arises to not auto-open the page, discuss separately
 
 ---
 
-## Поточний стан тестів
+## Current Test State
 
-**24 тести, всі зелені**
+**24 tests, all green**
 
-| Файл | Тестів | Теги |
+| File | Tests | Tags |
 |---|---|---|
 | `tests/e2e/smoke.spec.ts` | 3 | @smoke |
 | `tests/e2e/docs.spec.ts` | 4 | @regression |
@@ -128,41 +125,41 @@ tests/
 
 ---
 
-## Roadmap та Definition of Done
+## Roadmap and Definition of Done
 
-### Фаза 1 — Ініціалізація ✅
-- [x] npm init + TypeScript + tsconfig з path aliases
-- [x] Playwright встановлено, Chromium завантажено
-- [x] `playwright.config.ts` з baseURL, retries, trace, screenshot
+### Phase 1 — Initialization ✅
+- [x] npm init + TypeScript + tsconfig with path aliases
+- [x] Playwright installed, Chromium downloaded
+- [x] `playwright.config.ts` with baseURL, retries, trace, screenshot
 
-### Фаза 2 — Page Objects ✅
-- [x] `BasePage` абстрактний клас
+### Phase 2 — Page Objects ✅
+- [x] `BasePage` abstract class
 - [x] `HomePage extends BasePage`
 
-### Фаза 3 — Fixtures та перші тести ✅
+### Phase 3 — Fixtures and first tests ✅
 - [x] `pages.fixture.ts` + barrel `index.ts`
-- [x] `smoke.spec.ts` — 3 тести, всі зелені
+- [x] `smoke.spec.ts` — 3 tests, all green
 
-### Фаза 4 — Test Data Management ✅
-- [x] `.env` + `dotenv`, `playwright.config.ts` завантажує `.env`
-- [x] `src/data/` — фабрики для всіх тестових даних
-- [x] Тести без hardcoded даних
+### Phase 4 — Test Data Management ✅
+- [x] `.env` + `dotenv`, `playwright.config.ts` loads `.env`
+- [x] `src/data/` — factories for all test data
+- [x] Tests with no hardcoded data
 
-### Фаза 5 — API Testing ✅
-- [x] `api.fixture.ts` з `APIRequestContext`
-- [x] `mergeTests` для composable fixtures
-- [x] 2 API тести в `tests/api/`
+### Phase 5 — API Testing ✅
+- [x] `api.fixture.ts` with `APIRequestContext`
+- [x] `mergeTests` for composable fixtures
+- [x] 2 API tests in `tests/api/`
 
-### Фаза 6 — Reporting ✅
-- [x] HTML reporter: `open: 'on-failure'` локально, `'never'` на CI
-- [x] `test.step()` у всіх тестах — детальне дерево кроків у звіті
+### Phase 6 — Reporting ✅
+- [x] HTML reporter: `open: 'on-failure'` locally, `'never'` on CI
+- [x] `test.step()` in every test — detailed step tree in the report
 
-### Фаза 7 — CI/CD ✅
-- [x] GitHub Actions workflow на push/PR до main
+### Phase 7 — CI/CD ✅
+- [x] GitHub Actions workflow on push/PR to main
 - [x] Node.js 22, `npm ci`, `playwright install --with-deps chromium`
-- [x] Артефакти: `playwright-report` (30 днів), `test-results` (7 днів)
+- [x] Artifacts: `playwright-report` (30 days), `test-results` (7 days)
 
-### Фаза 8 — Розширення покриття ✅
+### Phase 8 — Coverage expansion ✅
 - [x] `DocsPage` — sidebar, TOC, breadcrumb, pagination
 - [x] `ApiReferencePage`
 - [x] Navigation flows, browser history, sidebar/TOC interaction
@@ -170,14 +167,14 @@ tests/
 
 ---
 
-## Команди
+## Commands
 
 ```bash
-npm test                           # всі тести
-npm run test:smoke                 # тільки @smoke
-npm run test:headed                # з видимим браузером
-npm run test:debug                 # покроковий дебагер
-npx playwright test --ui           # інтерактивний UI режим
-npx playwright test --grep @regression  # тільки regression
-npm run report                     # відкрити HTML звіт
+npm test                           # all tests
+npm run test:smoke                 # only @smoke
+npm run test:headed                # with a visible browser
+npm run test:debug                 # step-through debugger
+npx playwright test --ui           # interactive UI mode
+npx playwright test --grep @regression  # only regression
+npm run report                     # open the HTML report
 ```

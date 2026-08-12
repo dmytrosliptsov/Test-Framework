@@ -2,15 +2,15 @@
 allowed-tools: Bash, Read
 ---
 
-Інспектуй сторінку playwright.dev і поверни корисні дані для написання локаторів.
+Inspect a playwright.dev page and return useful data for writing locators.
 
-Аргументи: `$ARGUMENTS`
-Формат: URL шлях відносно baseURL
-Приклад: `/docs/intro` або `/mcp/introduction`
+Arguments: `$ARGUMENTS`
+Format: URL path relative to baseURL
+Example: `/docs/intro` or `/mcp/introduction`
 
-## Дії
+## Action
 
-Запусти наступний Node.js скрипт (замість `PATH` підстав аргумент):
+Run the following Node.js script (substitute the argument for `PATH`):
 
 ```bash
 node -e "
@@ -49,7 +49,7 @@ const { chromium } = require('@playwright/test');
 
   // Key links (first 10)
   const links = await page.getByRole('link').all();
-  console.log('\\n=== LINKS (перші 10 з текстом) ===');
+  console.log('\\n=== LINKS (first 10 with text) ===');
   let count = 0;
   for (const link of links) {
     const text = (await link.textContent()).trim();
@@ -62,15 +62,15 @@ const { chromium } = require('@playwright/test');
 "
 ```
 
-## Що виводити після запуску
+## What to output after running
 
-Після отримання результатів — **проаналізуй і запропонуй готові локатори** для Page Object:
+After getting the results — **analyze them and propose ready-to-use locators** for the Page Object:
 
 ```ts
-// Запропоновані локатори для {ARGUMENTS}
+// Proposed locators for {ARGUMENTS}
 readonly someElement: Locator = this.getByRole('heading', { name: '...' });
 readonly someLink: Locator = this.getByRole('link', { name: '...' });
 readonly someButton: Locator = this.getByRole('button', { name: '...' });
 ```
 
-Пояснюй чому обрав саме ці локатори (getByRole > getByText > CSS).
+Explain why you chose these specific locators (getByRole > getByText > CSS).

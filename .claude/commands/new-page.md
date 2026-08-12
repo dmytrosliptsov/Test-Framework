@@ -2,29 +2,29 @@
 allowed-tools: Read, Write, Edit, Bash
 ---
 
-Створи новий Playwright Page Object для цього проекту.
+Create a new Playwright Page Object for this project.
 
-Аргументи: `$ARGUMENTS`
-Формат аргументів: `ClassName /url/path`
-Приклад: `SearchPage /docs/search`
+Arguments: `$ARGUMENTS`
+Argument format: `ClassName /url/path`
+Example: `SearchPage /docs/search`
 
-## Кроки
+## Steps
 
-1. **Прочитай** `src/pages/BasePage.ts` і `src/pages/DocsPage.ts` для розуміння поточних конвенцій.
+1. **Read** `src/pages/BasePage.ts` and `src/pages/DocsPage.ts` to understand the current conventions.
 
-2. **Створи** `src/pages/{ClassName}.ts`:
+2. **Create** `src/pages/{ClassName}.ts`:
    - `extends BasePage`
-   - `readonly` локатори через `getByRole` де можливо
-   - Метод `open()` з URL з аргументів
-   - Методи для ключових дій користувача на цій сторінці
-   - Без зайвих коментарів
+   - `readonly` locators via `getByRole` where possible
+   - An `open()` method with the URL from the arguments
+   - Methods for the key user actions on this page
+   - No unnecessary comments
 
-3. **Оновити** `src/fixtures/pages.fixture.ts`:
-   - Додай тип до `type Pages`
-   - Додай fixture що створює об'єкт і викликає `open()`
+3. **Update** `src/fixtures/pages.fixture.ts`:
+   - Add the type to `type Pages`
+   - Add a fixture that creates the object and calls `open()`
 
-4. **Запитай** у користувача чи потрібен data файл для цієї сторінки.
+4. **Ask** the user whether a data file is needed for this page.
 
-5. **Виведи** підсумок: які файли створено/змінено, які локатори додано, що варто протестити.
+5. **Output** a summary: which files were created/changed, which locators were added, and what's worth testing.
 
-Дотримуйся конвенцій з CLAUDE.md: `PascalCase` для класу, синхронні локатори (не async), методи описують дії користувача.
+Follow the conventions from CLAUDE.md: `PascalCase` for the class, synchronous locators (not async), methods describe user actions.
