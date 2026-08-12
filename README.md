@@ -16,6 +16,7 @@ Tests are organized around reusable Page Objects, dependency-injected via Playwr
 - [Playwright](https://playwright.dev) `^1.60.0` — test runner and browser automation
 - **TypeScript** `^6.0.3` — strict mode
 - **dotenv** `^17.4.2` — environment configuration via `.env`
+- **allure-playwright** `^3.10.2` + **allure-commandline** `^2.43.0` — Allure reporting
 - **ESLint** + **typescript-eslint** + **eslint-plugin-playwright**, **Prettier**, **Husky** + **lint-staged** — linting, formatting, pre-commit checks
 - **Node.js** / npm
 
@@ -154,6 +155,16 @@ npm run report
 
 By default, the HTML report opens automatically on failure locally (`open: 'on-failure'`); on CI it is never opened automatically (`open: 'never'`) and is instead uploaded as a build artifact. Every Page Object method call appears as a step in the report via the `@step` decorator.
 
+## Allure Report
+
+Alongside the built-in HTML reporter, `allure-playwright` writes raw result files to `allure-results/` on every run. Generating and viewing the human-readable Allure report requires the [Allure commandline](https://allurereport.org/docs/gettingstarted/) (installed as `allure-commandline`), which in turn requires a **Java runtime (JRE 8+)** on your machine.
+
+```bash
+npm run allure:generate   # build the HTML report from allure-results/ into allure-report/
+npm run allure:open       # serve and open the generated Allure report
+npm run allure:report     # generate and open in one step
+```
+
 ## CI/CD
 
 GitHub Actions workflow (`.github/workflows/playwright.yml`) runs on every push and pull request to `main`:
@@ -162,7 +173,7 @@ GitHub Actions workflow (`.github/workflows/playwright.yml`) runs on every push 
 2. Installs dependencies with `npm ci`.
 3. Installs the Chromium, Firefox, and WebKit browsers via `npx playwright install --with-deps chromium firefox webkit`.
 4. Runs the full test suite (`npm test`) across all three browser projects, with `CI=true` and `BASE_URL` from repository variables (falls back to `https://playwright.dev`).
-5. Uploads the `playwright-report/` artifact (retained 30 days) and `test-results/` artifact (retained 7 days, if present) regardless of test outcome.
+5. Uploads the `playwright-report/` artifact (retained 30 days), `test-results/` artifact (retained 7 days, if present), and `allure-results/` artifact (retained 7 days, if present) regardless of test outcome.
 
 Retries are enabled only on CI (2 retries), and workers are capped at 2 on CI for stability.
 

@@ -5,7 +5,15 @@ import prettierConfig from 'eslint-config-prettier';
 
 export default tseslint.config(
   {
-    ignores: ['node_modules/**', 'dist/**', 'playwright-report/**', 'test-results/**', 'test-artifacts/**'],
+    ignores: [
+      'node_modules/**',
+      'dist/**',
+      'playwright-report/**',
+      'test-results/**',
+      'test-artifacts/**',
+      'allure-results/**',
+      'allure-report/**',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
