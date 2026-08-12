@@ -9,10 +9,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 2 : undefined,
-  reporter: [
-    ['list'],
-    ['html', { outputFolder: 'playwright-report', open: process.env.CI ? 'never' : 'on-failure' }],
-  ],
+  reporter: [['list'], ['html', { outputFolder: 'playwright-report', open: process.env.CI ? 'never' : 'on-failure' }]],
 
   use: {
     baseURL: process.env.BASE_URL ?? 'https://playwright.dev',
@@ -25,6 +22,14 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+    },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
     },
   ],
 });

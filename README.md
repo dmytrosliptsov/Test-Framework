@@ -120,7 +120,7 @@ tsconfig.json
 git clone https://github.com/dmytrosliptsov/Test-Framework.git
 cd Test-Framework
 npm install
-npx playwright install --with-deps chromium
+npx playwright install --with-deps chromium firefox webkit
 ```
 
 Create a `.env` file in the project root (or copy the existing one) to configure the target base URL:
@@ -139,9 +139,11 @@ npx playwright test --grep @api          # only @api tests
 npm run test:headed                      # run with a visible browser
 npm run test:debug                       # step through with Playwright's debugger
 npx playwright test --ui                 # interactive UI mode
+npx playwright test --project=firefox    # run only on Firefox
+npx playwright test --project=webkit     # run only on WebKit
 ```
 
-Tests run on Chromium (Desktop Chrome) — the only browser project currently configured in `playwright.config.ts`.
+Tests run against three browser projects configured in `playwright.config.ts`: `chromium` (Desktop Chrome), `firefox` (Desktop Firefox), and `webkit` (Desktop Safari). Use `--project=<name>` to target a single browser, or omit it to run against all three.
 
 ## Viewing the HTML Report
 
@@ -157,8 +159,8 @@ GitHub Actions workflow (`.github/workflows/playwright.yml`) runs on every push 
 
 1. Checks out the repo and sets up Node.js 22 (with npm caching).
 2. Installs dependencies with `npm ci`.
-3. Installs the Chromium browser via `npx playwright install --with-deps chromium`.
-4. Runs the full test suite (`npm test`) with `CI=true` and `BASE_URL` from repository variables (falls back to `https://playwright.dev`).
+3. Installs the Chromium, Firefox, and WebKit browsers via `npx playwright install --with-deps chromium firefox webkit`.
+4. Runs the full test suite (`npm test`) across all three browser projects, with `CI=true` and `BASE_URL` from repository variables (falls back to `https://playwright.dev`).
 5. Uploads the `playwright-report/` artifact (retained 30 days) and `test-results/` artifact (retained 7 days, if present) regardless of test outcome.
 
 Retries are enabled only on CI (2 retries), and workers are capped at 2 on CI for stability.
