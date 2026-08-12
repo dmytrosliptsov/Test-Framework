@@ -90,6 +90,8 @@ tests/
     search.spec.ts
     navigation.spec.ts
     api-reference.spec.ts
+    visual.spec.ts
+    visual.spec.ts-snapshots/   Committed baseline screenshots
   api/                  HTTP-level tests
     playwright-site.spec.ts
 .github/workflows/
@@ -102,7 +104,7 @@ tsconfig.json
 
 ## Test Suite
 
-24 tests across 6 spec files:
+25 tests across 7 spec files:
 
 | File                                | Tests | Tag           |
 | ----------------------------------- | ----- | ------------- |
@@ -111,6 +113,7 @@ tsconfig.json
 | `tests/e2e/search.spec.ts`          | 3     | `@regression` |
 | `tests/e2e/navigation.spec.ts`      | 9     | `@regression` |
 | `tests/e2e/api-reference.spec.ts`   | 3     | `@regression` |
+| `tests/e2e/visual.spec.ts`          | 1     | `@visual`     |
 | `tests/api/playwright-site.spec.ts` | 2     | `@api`        |
 
 ## Prerequisites
@@ -141,6 +144,7 @@ npm test                                 # run all tests
 npm run test:smoke                       # only @smoke tests
 npx playwright test --grep @regression   # only @regression tests
 npx playwright test --grep @api          # only @api tests
+npx playwright test --grep @visual       # only @visual tests
 npm run test:headed                      # run with a visible browser
 npm run test:debug                       # step through with Playwright's debugger
 npx playwright test --ui                 # interactive UI mode
@@ -157,6 +161,30 @@ npm run report
 ```
 
 By default, the HTML report opens automatically on failure locally (`open: 'on-failure'`); on CI it is never opened automatically (`open: 'never'`) and is instead uploaded as a build artifact. Every Page Object method call appears as a step in the report via the `@step` decorator.
+
+## Visual Regression Testing
+
+`tests/e2e/visual.spec.ts` (tagged `@visual`) uses Playwright's built-in `toHaveScreenshot()` assertion to catch unintended visual changes on the homepage hero section (`HomePage.heroHeading`).
+
+**How baselines work:**
+
+- The first run of a `toHaveScreenshot()` assertion has nothing to compare against, so it writes a baseline PNG instead of asserting and reports "A snapshot doesn't exist ... writing actual."
+- Baselines are stored next to the spec file in `tests/e2e/visual.spec.ts-snapshots/`, one file per browser/OS combination (e.g. `home-hero-chromium-linux.png`), and must be **committed to the repository**.
+- On every subsequent run, the actual screenshot is pixel-compared against the matching baseline; a mismatch fails the test and attaches the expected/actual/diff images to the HTML report.
+- Because baselines are OS- and font-rendering-specific, screenshots generated on Windows/macOS **will not match** the Linux baselines used by CI (GitHub Actions runs on `ubuntu-latest`). Generate or update baselines using the project's [Docker image](#running-in-docker) so they match the CI environment:
+
+```bash
+docker compose run --rm --build playwright npx playwright test tests/e2e/visual.spec.ts --update-snapshots
+```
+
+**Updating baselines** after an intentional UI change:
+
+```bash
+npm run test:update-snapshots              # update all baselines against your local OS
+npx playwright test --grep @visual --update-snapshots   # update only @visual baselines
+```
+
+For baselines that must match CI, run the equivalent command through Docker (as shown above) instead of natively, then commit the resulting PNGs in `tests/e2e/visual.spec.ts-snapshots/`.
 
 ## Allure Report
 
