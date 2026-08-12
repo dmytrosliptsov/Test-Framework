@@ -16,6 +16,7 @@ Tests are organized around reusable Page Objects, dependency-injected via Playwr
 - [Playwright](https://playwright.dev) `^1.60.0` — test runner and browser automation
 - **TypeScript** `^6.0.3` — strict mode
 - **dotenv** `^17.4.2` — environment configuration via `.env`
+- **ESLint** + **typescript-eslint** + **eslint-plugin-playwright**, **Prettier**, **Husky** + **lint-staged** — linting, formatting, pre-commit checks
 - **Node.js** / npm
 
 ## Architecture
@@ -164,3 +165,17 @@ GitHub Actions workflow (`.github/workflows/playwright.yml`) runs on every push 
 5. Uploads the `playwright-report/` artifact (retained 30 days) and `test-results/` artifact (retained 7 days, if present) regardless of test outcome.
 
 Retries are enabled only on CI (2 retries), and workers are capped at 2 on CI for stability.
+
+## Code Quality
+
+Code style and correctness are enforced with ESLint and Prettier, and checked automatically before every commit.
+
+- **ESLint** (`eslint.config.mjs`) — flat config using `typescript-eslint` recommended rules plus `eslint-plugin-playwright`'s recommended rules scoped to `tests/**`, with `eslint-config-prettier` disabling any formatting rules that would conflict with Prettier.
+- **Prettier** (`.prettierrc.json`) — single quotes, semicolons, 120-character print width, trailing commas.
+- **Husky + lint-staged** — a `pre-commit` hook (`.husky/pre-commit`) runs `lint-staged`, which applies `eslint --fix` and `prettier --write` only to staged files.
+
+```bash
+npm run lint       # check for lint errors
+npm run lint:fix   # check and auto-fix lint errors
+npm run format     # format the whole project with Prettier
+```

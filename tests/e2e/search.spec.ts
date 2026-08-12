@@ -34,7 +34,7 @@ test.describe('Search', () => {
       await homePage.page.keyboard.press('Escape');
     });
     await test.step('verify search input is no longer visible', async () => {
-      await expect(homePage.searchInput).not.toBeVisible();
+      await expect(homePage.searchInput).toBeHidden();
     });
   });
 });
